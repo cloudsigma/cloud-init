@@ -52,6 +52,7 @@ class DataSourceCloudSigma(sources.DataSource):
 # Used to match classes to dependencies
 datasources = [
     (DataSourceCloudSigma, (sources.DEP_FILESYSTEM)),
+    (DataSourceCloudSigma, (sources.DEP_FILESYSTEM, sources.DEP_NETWORK)),
 ]
 
 
