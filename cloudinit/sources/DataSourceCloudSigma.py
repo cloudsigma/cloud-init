@@ -16,7 +16,6 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 from slugify import slugify
-import yaml
 
 from cloudinit import log as logging
 from cloudinit import sources
@@ -31,17 +30,11 @@ class DataSourceCloudSigma(sources.DataSource):
         self.cepko = cs_utils.Cepko()
         sources.DataSource.__init__(self, sys_cfg, distro, paths)
 
-    def _to_cloud_config(self, input):
-        if isinstance(input, basestring):
-            input = yaml.load(input)
-
-        return "#cloud-config\n{}".format(yaml.safe_dump(input))
-
     def get_data(self):
         try:
             server_context = self.cepko.all().result
             server_meta = server_context['meta']
-            self.userdata_raw = self._to_cloud_config(server_meta.get("cloud-config", {}))
+            self.userdata_raw = server_meta.get("cloud-config", "")
             self.metadata = server_context
             self.ssh_public_key = server_meta["ssh_public_key"]
         except:
