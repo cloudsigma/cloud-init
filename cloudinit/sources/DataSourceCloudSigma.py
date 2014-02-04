@@ -1,6 +1,6 @@
 # vi: ts=4 expandtab
 #
-#    Copyright (C) 2013 CloudSigma
+#    Copyright (C) 2013-2014 CloudSigma
 #
 #    Author: Kiril Vladimiroff <kiril.vladimiroff@cloudsigma.com>
 #
