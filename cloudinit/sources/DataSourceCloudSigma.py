@@ -34,16 +34,19 @@ class DataSourceCloudSigma(sources.DataSource):
         try:
             server_context = self.cepko.all().result
             server_meta = server_context['meta']
-            self.userdata_raw = server_meta.get("cloud-config", "")
+            self.userdata_raw = server_meta.get('cloud-config', "")
             self.metadata = server_context
-            self.ssh_public_key = server_meta["ssh_public_key"]
+            self.ssh_public_key = server_meta['ssh_public_key']
         except:
             util.logexc(LOG, "Failed reading from the serial port")
             return False
         return True
 
     def get_hostname(self, fqdn=False):
-        return slugify(self.metadata['name'])[:61]
+        if len(self.metadata['name']) > 0:
+            return slugify(self.metadata['name'])[:61]
+        else:
+            return self.metadata['uuid'].split('-')[0]
 
     def get_public_ssh_keys(self):
         return [self.ssh_public_key]
