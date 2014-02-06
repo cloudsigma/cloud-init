@@ -32,6 +32,7 @@ requests
 # For patching pieces of cloud-config together
 jsonpatch
 
-# This one is currently only used by the CloudSigma datasource. If that
-# datasource is removed, this is no longer needed
+# These two are currently only used by the CloudSigma datasource. If that
+# datasource is removed, these are no longer needed
 awesome-slugify
+cepko
