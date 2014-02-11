@@ -31,7 +31,3 @@ requests
 
 # For patching pieces of cloud-config together
 jsonpatch
-
-# This one is currently used only by the CloudSigma datasource.
-# If this datasource is removed, this is no longer needed
-cepko

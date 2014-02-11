@@ -1,6 +1,6 @@
 # vi: ts=4 expandtab
 #
-#    Copyright (C) 2013-2014 CloudSigma
+#    Copyright (C) 2014 CloudSigma
 #
 #    Author: Kiril Vladimiroff <kiril.vladimiroff@cloudsigma.com>
 #
@@ -17,11 +17,10 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import re
 
-from cepko import Cepko
-
 from cloudinit import log as logging
 from cloudinit import sources
 from cloudinit import util
+from cloudinit.cs_utils import Cepko
 
 LOG = logging.getLogger(__name__)
 
