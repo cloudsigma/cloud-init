@@ -1,19 +1,9 @@
-import json
-import os
-import sys
-
-try:
-    from unittest import TestCase, mock
-except ImportError:
-    import mock
-    from unittest import TestCase
-
+from mocker import MockerTestCase
 
 from cloudinit.cs_utils import Cepko
 
-sys.path.insert(0, os.path.abspath('..'))
 
-BIG_DICT = {
+SERVER_CONTEXT = {
     "cpu": 1000,
     "cpus_instead_of_cores": False,
     "global_context": {"some_global_key": "some_global_val"},
@@ -28,37 +18,25 @@ BIG_DICT = {
 }
 
 
-@mock.patch("cloudinit.cs_utils.CepkoResult._execute", lambda *args: "")
-class CepkoRequestsTests(TestCase):
+class CepkoMock(Cepko):
+    def all(self):
+        return SERVER_CONTEXT
+
+    def get(self, query):
+        return SERVER_CONTEXT['tags']
+
+
+class CepkoResultTests(MockerTestCase):
     def setUp(self):
+        self.mocked = self.mocker.replace("cloudinit.cs_utils.Cepko",
+                            spec=CepkoMock,
+                            count=False,
+                            passthrough=False)
+        self.mocked()
+        self.mocker.result(CepkoMock())
+        self.mocker.replay()
         self.c = Cepko()
 
-    def test_all(self):
-        self.assertEqual("<\n\n>", self.c.all().request)
-        self.assertEqual("<\n\n>", self.c.get().request)
-
-    def test_get_single_key(self):
-        self.assertEqual("<\nname\n>", self.c.get("name").request)
-        self.assertEqual("<\n/name\n>", self.c.get("/name").request)
-
-    def test_get_nested_key(self):
-        self.assertEqual("<\nmeta/ssh_public_key\n>", self.c.get("meta/ssh_public_key").request)
-        self.assertEqual("<\n/tags/0\n>", self.c.get("/tags/0").request)
-
-    def test_meta(self):
-        self.assertEqual("<\n/meta/\n>", self.c.meta().request)
-        self.assertEqual("<\n/meta/public_ssh_key\n>", self.c.meta("public_ssh_key").request)
-
-    def test_global_context(self):
-        self.assertEqual("<\n/global_context/\n>", self.c.global_context().request)
-        self.assertEqual("<\n/global_context/public_ssh_key\n>", self.c.global_context("public_ssh_key").request)
-
-
-class CepkoResultTests(TestCase):
-    def setUp(self):
-        self.c = Cepko()
-
-    @mock.patch("cloudinit.cs_utils.CepkoResult._execute", lambda *args: json.dumps(BIG_DICT))
     def test_getitem(self):
         result = self.c.all()
         self.assertEqual("65b2fb23-8c03-4187-a3ba-8b7c919e8890", result['uuid'])
@@ -66,11 +44,9 @@ class CepkoResultTests(TestCase):
         self.assertEqual("much server", result['tags'][0])
         self.assertEqual(1, result['smp'])
 
-    @mock.patch("cloudinit.cs_utils.CepkoResult._execute", lambda *args: json.dumps(BIG_DICT))
     def test_len(self):
-        self.assertEqual(len(BIG_DICT), len(self.c.all()))
+        self.assertEqual(len(SERVER_CONTEXT), len(self.c.all()))
 
-    @mock.patch("cloudinit.cs_utils.CepkoResult._execute", lambda *args: json.dumps(BIG_DICT))
     def test_contains(self):
         result = self.c.all()
         self.assertTrue('uuid' in result)
@@ -78,13 +54,11 @@ class CepkoResultTests(TestCase):
         self.assertTrue('meta' in result)
         self.assertFalse('ssh_public_key' in result)
 
-    @mock.patch("cloudinit.cs_utils.CepkoResult._execute", lambda *args: json.dumps(BIG_DICT))
     def test_iter(self):
-        self.assertEqual(sorted(BIG_DICT.keys()), sorted([key for key in self.c.all()]))
+        self.assertEqual(sorted(SERVER_CONTEXT.keys()), sorted([key for key in self.c.all()]))
 
-    @mock.patch("cloudinit.cs_utils.CepkoResult._execute", lambda *args: json.dumps(BIG_DICT['tags']))
     def test_with_list_as_result(self):
-        result = self.c.all()
+        result = self.c.get('tags')
         self.assertEqual('much server', result[0])
         self.assertTrue('very performance' in result)
         self.assertEqual(2, len(result))
