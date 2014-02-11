@@ -9,7 +9,7 @@ except ImportError:
     from unittest import TestCase
 
 
-from cepko import Cepko
+from cloudinit.cs_utils import Cepko
 
 sys.path.insert(0, os.path.abspath('..'))
 
@@ -28,7 +28,7 @@ BIG_DICT = {
 }
 
 
-@mock.patch("cepko.CepkoResult._execute", lambda *args: "")
+@mock.patch("cloudinit.cs_utils.CepkoResult._execute", lambda *args: "")
 class CepkoRequestsTests(TestCase):
     def setUp(self):
         self.c = Cepko()
@@ -58,7 +58,7 @@ class CepkoResultTests(TestCase):
     def setUp(self):
         self.c = Cepko()
 
-    @mock.patch("cepko.CepkoResult._execute", lambda *args: json.dumps(BIG_DICT))
+    @mock.patch("cloudinit.cs_utils.CepkoResult._execute", lambda *args: json.dumps(BIG_DICT))
     def test_getitem(self):
         result = self.c.all()
         self.assertEqual("65b2fb23-8c03-4187-a3ba-8b7c919e8890", result['uuid'])
@@ -66,11 +66,11 @@ class CepkoResultTests(TestCase):
         self.assertEqual("much server", result['tags'][0])
         self.assertEqual(1, result['smp'])
 
-    @mock.patch("cepko.CepkoResult._execute", lambda *args: json.dumps(BIG_DICT))
+    @mock.patch("cloudinit.cs_utils.CepkoResult._execute", lambda *args: json.dumps(BIG_DICT))
     def test_len(self):
         self.assertEqual(len(BIG_DICT), len(self.c.all()))
 
-    @mock.patch("cepko.CepkoResult._execute", lambda *args: json.dumps(BIG_DICT))
+    @mock.patch("cloudinit.cs_utils.CepkoResult._execute", lambda *args: json.dumps(BIG_DICT))
     def test_contains(self):
         result = self.c.all()
         self.assertTrue('uuid' in result)
@@ -78,11 +78,11 @@ class CepkoResultTests(TestCase):
         self.assertTrue('meta' in result)
         self.assertFalse('ssh_public_key' in result)
 
-    @mock.patch("cepko.CepkoResult._execute", lambda *args: json.dumps(BIG_DICT))
+    @mock.patch("cloudinit.cs_utils.CepkoResult._execute", lambda *args: json.dumps(BIG_DICT))
     def test_iter(self):
         self.assertEqual(sorted(BIG_DICT.keys()), sorted([key for key in self.c.all()]))
 
-    @mock.patch("cepko.CepkoResult._execute", lambda *args: json.dumps(BIG_DICT['tags']))
+    @mock.patch("cloudinit.cs_utils.CepkoResult._execute", lambda *args: json.dumps(BIG_DICT['tags']))
     def test_with_list_as_result(self):
         result = self.c.all()
         self.assertEqual('much server', result[0])
