@@ -24,7 +24,7 @@ header could be omitted. However since this is a raw-text field you could provid
 `config formats`_.
 
 If your user-data needs an internet connection you have to create a `meta field`_ in the `server context`_
-``cloudinit-dsmode`` and give it "net" as value. If this field does not exist the default value is "local".
+``cloudinit-dsmode`` and set "net" as value. If this field does not exist the default value is "local".
 
 
 

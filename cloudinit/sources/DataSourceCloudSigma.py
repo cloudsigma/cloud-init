@@ -47,7 +47,7 @@ class DataSourceCloudSigma(sources.DataSource):
         try:
             server_context = self.cepko.all().result
             server_meta = server_context['meta']
-            self.userdata_raw = server_meta.get('cloud-config', "")
+            self.userdata_raw = server_meta.get('cloudinit-user-data', "")
             self.metadata = server_context
             self.ssh_public_key = server_meta['ssh_public_key']
 
