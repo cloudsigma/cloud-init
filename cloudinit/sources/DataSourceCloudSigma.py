@@ -24,6 +24,8 @@ from cloudinit import util
 
 LOG = logging.getLogger(__name__)
 
+VALID_DSMODES = ("local", "net", "disabled")
+
 
 class DataSourceCloudSigma(sources.DataSource):
     """
@@ -33,6 +35,7 @@ class DataSourceCloudSigma(sources.DataSource):
     http://cloudsigma-docs.readthedocs.org/en/latest/server_context.html
     """
     def __init__(self, sys_cfg, distro, paths):
+        self.dsmode = 'local'
         self.cepko = Cepko()
         sources.DataSource.__init__(self, sys_cfg, distro, paths)
 
@@ -47,6 +50,9 @@ class DataSourceCloudSigma(sources.DataSource):
             self.userdata_raw = server_meta.get('cloud-config', "")
             self.metadata = server_context
             self.ssh_public_key = server_meta['ssh_public_key']
+
+            if server_meta.get('cloudinit-dsmode') in VALID_DSMODES:
+                self.dsmode = server_meta['cloudinit-dsmode']
         except:
             util.logexc(LOG, "Failed reading from the serial port")
             return False
