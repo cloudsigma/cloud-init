@@ -15,7 +15,8 @@
 #
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-from slugify import slugify
+import re
+
 from cepko import Cepko
 
 from cloudinit import log as logging
@@ -63,8 +64,8 @@ class DataSourceCloudSigma(sources.DataSource):
         Cleans up and uses the server's name if the latter is set. Otherwise
         the first part from uuid is being used.
         """
-        if len(self.metadata['name']) > 0:
-            return slugify(self.metadata['name'])[:61]
+        if re.match(r'^[A-Za-z0-9 -_\.]+$', self.metadata['name']):
+            return self.metadata['name'][:61]
         else:
             return self.metadata['uuid'].split('-')[0]
 
