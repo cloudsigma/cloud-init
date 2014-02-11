@@ -65,6 +65,9 @@ class DataSourceCloudSigma(sources.DataSource):
     def get_public_ssh_keys(self):
         return [self.ssh_public_key]
 
+    def get_instance_id(self):
+        return self.metadata['uuid']
+
 
 # Used to match classes to dependencies. Since this datasource uses the serial
 # port network is not really required, so it's okay to load without it, too.
