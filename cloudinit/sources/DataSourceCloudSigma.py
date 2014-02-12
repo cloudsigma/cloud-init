@@ -37,6 +37,7 @@ class DataSourceCloudSigma(sources.DataSource):
     def __init__(self, sys_cfg, distro, paths):
         self.dsmode = 'local'
         self.cepko = Cepko()
+        self.ssh_public_key = ''
         sources.DataSource.__init__(self, sys_cfg, distro, paths)
 
     def get_data(self):
@@ -58,7 +59,7 @@ class DataSourceCloudSigma(sources.DataSource):
             return False
         return True
 
-    def get_hostname(self, fqdn=False):
+    def get_hostname(self, fqdn=False, resolve_ip=False):
         """
         Cleans up and uses the server's name if the latter is set. Otherwise
         the first part from uuid is being used.

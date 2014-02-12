@@ -44,13 +44,16 @@ class DataSourceCloudSigmaTest(TestCase):
         self.assertEqual("65b2fb23", self.datasource.get_hostname())
 
     def test_get_public_ssh_keys(self):
-        self.assertEqual([SERVER_CONTEXT['meta']['ssh_public_key']], self.datasource.get_public_ssh_keys())
+        self.assertEqual([SERVER_CONTEXT['meta']['ssh_public_key']],
+                         self.datasource.get_public_ssh_keys())
 
     def test_get_instance_id(self):
-        self.assertEqual(SERVER_CONTEXT['uuid'], self.datasource.get_instance_id())
+        self.assertEqual(SERVER_CONTEXT['uuid'],
+                         self.datasource.get_instance_id())
 
     def test_metadata(self):
         self.assertEqual(self.datasource.metadata, SERVER_CONTEXT)
 
     def test_user_data(self):
-        self.assertEqual(self.datasource.userdata_raw, SERVER_CONTEXT['meta']['cloudinit-user-data'])
+        self.assertEqual(self.datasource.userdata_raw,
+                         SERVER_CONTEXT['meta']['cloudinit-user-data'])

@@ -13,7 +13,7 @@ SERVER_CONTEXT = {
     "requirements": [],
     "smp": 1,
     "tags": ["much server", "very performance"],
-    "uuid": "65b2fb23-8c03-4187-a3ba-8b7c919e8890",
+    "uuid": "65b2fb23-8c03-4187-a3ba-8b7c919e889",
     "vnc_password": "9e84d6cb49e46379"
 }
 
@@ -22,7 +22,7 @@ class CepkoMock(Cepko):
     def all(self):
         return SERVER_CONTEXT
 
-    def get(self, query):
+    def get(self, key="", request_pattern=None):
         return SERVER_CONTEXT['tags']
 
 
@@ -39,7 +39,7 @@ class CepkoResultTests(MockerTestCase):
 
     def test_getitem(self):
         result = self.c.all()
-        self.assertEqual("65b2fb23-8c03-4187-a3ba-8b7c919e8890", result['uuid'])
+        self.assertEqual("65b2fb23-8c03-4187-a3ba-8b7c919e889", result['uuid'])
         self.assertEqual([], result['requirements'])
         self.assertEqual("much server", result['tags'][0])
         self.assertEqual(1, result['smp'])
@@ -55,7 +55,8 @@ class CepkoResultTests(MockerTestCase):
         self.assertFalse('ssh_public_key' in result)
 
     def test_iter(self):
-        self.assertEqual(sorted(SERVER_CONTEXT.keys()), sorted([key for key in self.c.all()]))
+        self.assertEqual(sorted(SERVER_CONTEXT.keys()),
+                         sorted([key for key in self.c.all()]))
 
     def test_with_list_as_result(self):
         result = self.c.get('tags')
